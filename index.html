@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trắc Nghiệm Mạch Khuếch Đại</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Tạo background loang màu xanh - vàng - trắng */
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        /* Hiệu ứng kính mờ cho thẻ chứa nội dung */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Dữ liệu quiz (Giữ nguyên như cũ)
+
+        const quizData = [
+            { id: 1, question: "Câu 1: Theo định nghĩa, mạch khuếch đại có hệ thống biến đổi năng lượng như thế nào?", options: ["A. Biến đổi năng lượng xoay chiều thành một chiều.", "B. Biến đổi năng lượng một chiều thành một chiều với biên độ lớn hơn.", "C. Biến đổi năng lượng một chiều thành xoay chiều dưới sự điều khiển của tín hiệu vào.", "D. Biến đổi năng lượng nhiệt thành điện năng."], answer: 2 },
+            { id: 2, question: "Câu 2: Năng lượng cung cấp để mạch khuếch đại tạo ra công suất ở đầu ra được lấy từ đâu?", options: ["A. Tín hiệu đầu vào.", "B. Nguồn cung cấp một chiều (nguồn nuôi).", "C. Tín hiệu phản hồi.", "D. Trở kháng của tải."], answer: 1 },
+            { id: 3, question: "Câu 3: Mạch khuếch đại lý tưởng yêu cầu dạng tín hiệu đầu ra phải như thế nào so với dạng tín hiệu đầu vào?", options: ["A. Giống hệt nhau (không gây méo tín hiệu).", "B. Ngược pha hoàn toàn và bị nén biên độ.", "C. Méo dạng để tăng hiệu suất.", "D. Trễ pha 90 độ."], answer: 0 },
+            { id: 4, question: "Câu 4: Hệ số khuếch đại K được tính bằng biểu thức nào?", options: ["A. K = Đại lượng đầu vào / Đại lượng đầu ra", "B. K = Đại lượng đầu ra - Đại lượng đầu vào", "C. K = Đại lượng đầu ra × Đại lượng đầu vào", "D. K = Đại lượng đầu ra / Đại lượng tương ứng đầu vào"], answer: 3 },
+            { id: 5, question: "Câu 5: Công thức tính trở kháng vào Zv của mạch khuếch đại là gì?", options: ["A. Zv = Ur / Ir", "B. Zv = Uv / Iv", "C. Zv = Iv / Uv", "D. Zv = Uv × Iv"], answer: 1 },
+            { id: 6, question: "Câu 6: Trong các tham số cơ bản của mạch khuếch đại, tham số nào biểu diễn tỷ số giữa công suất tín hiệu xoay chiều và công suất nguồn cung cấp một chiều?", options: ["A. Độ méo tần số.", "B. Độ méo phi tuyến.", "C. Hiệu suất (H).", "D. Trở kháng ra."], answer: 2 },
+            { id: 7, question: "Câu 7: Hồi tiếp trong mạch khuếch đại là hiện tượng gì?", options: ["A. Ghép nối nhiều tầng khuếch đại với nhau.", "B. Ghép một phần tín hiệu ra (điện áp hoặc dòng điện) quay về đầu vào.", "C. Đưa toàn bộ nguồn nuôi một chiều vào tín hiệu ra.", "D. Truyền tín hiệu từ đầu vào đi thẳng ra đầu ra mà không khuếch đại."], answer: 1 },
+            { id: 8, question: "Câu 8: Theo tài liệu, mạch khuếch đại có mấy loại hồi tiếp âm cơ bản?", options: ["A. 2 loại", "B. 3 loại", "C. 4 loại", "D. 5 loại"], answer: 2 },
+            { id: 9, question: "Câu 9: Hồi tiếp âm ảnh hưởng như thế nào đến tín hiệu trên đầu vào bộ khuếch đại?", options: ["A. Tăng tín hiệu đầu vào.", "B. Làm giảm tín hiệu trên đầu vào.", "C. Giữ nguyên tín hiệu đầu vào.", "D. Triệt tiêu hoàn toàn tín hiệu đầu vào."], answer: 1 },
+            { id: 10, question: "Câu 10: Hồi tiếp âm có tác động gì đến hệ số khuếch đại của mạch?", options: ["A. Làm tăng hệ số khuếch đại và giảm độ ổn định.", "B. Làm giảm hệ số khuếch đại và tăng độ ổn định.", "C. Làm tăng hệ số khuếch đại và tăng độ ổn định.", "D. Không làm thay đổi hệ số khuếch đại."], answer: 1 },
+            { id: 11, question: "Câu 11: Ảnh hưởng của hồi tiếp âm nối tiếp đến điện trở vào của mạch là gì?", options: ["A. Làm tăng điện trở vào.", "B. Làm giảm điện trở vào.", "C. Điện trở vào bằng 0.", "D. Không làm thay đổi điện trở vào."], answer: 0 },
+            { id: 12, question: "Câu 12: Hồi tiếp âm KHÔNG có tác dụng nào sau đây?", options: ["A. Giảm méo phi tuyến.", "B. Giảm méo tần số.", "C. Tăng tạp âm (nhiễu) trong bộ khuếch đại.", "D. Ổn định điểm làm việc tĩnh."], answer: 2 },
+            { id: 13, question: "Câu 13: Để ổn định điểm làm việc tĩnh (DC) cho mạch, người ta thường dùng phương pháp nào?", options: ["A. Hồi tiếp dương xoay chiều.", "B. Hồi tiếp âm xoay chiều.", "C. Hồi tiếp âm một chiều.", "D. Hồi tiếp dương một chiều."], answer: 2 },
+            { id: 14, question: "Câu 14: Mạch khuếch đại mắc kiểu E chung là mạch có đặc điểm gì?", options: ["A. Cực C nối đất, tín hiệu vào cực B, ra cực E.", "B. Cực B nối chung với đất cho tín hiệu xoay chiều.", "C. Tín hiệu xoay chiều đầu vào và đầu ra đều nối chung với đất là cực E.", "D. Không sử dụng cực E trong mạch."], answer: 2 },
+            { id: 15, question: "Câu 15: Trong sơ đồ mạch E chung, các tụ điện Cv và Cr được gọi là gì?", options: ["A. Tụ lọc nguồn.", "B. Tụ nối tầng.", "C. Tụ thoát nhiễu.", "D. Tụ cộng hưởng."], answer: 1 },
+            { id: 16, question: "Câu 16: Chức năng của hai điện trở R1 và R2 trong mạch E chung là gì?", options: ["A. Tải cho mạch xoay chiều.", "B. Tạo hồi tiếp âm dòng điện.", "C. Bộ phân áp DC để định thiên cho chân B.", "D. Chống nhiễu cho cực C."], answer: 2 },
+            { id: 17, question: "Câu 17: Điện trở RE trong mạch E chung có tác dụng quan trọng nhất là gì ở chế độ một chiều (DC)?", options: ["A. Phân áp cho cực C.", "B. Tăng hệ số khuếch đại dòng điện.", "C. Tạo hồi tiếp âm nối tiếp dòng điện để ổn định điểm làm việc.", "D. Giảm trở kháng vào của mạch."], answer: 2 },
+            { id: 18, question: "Câu 18: Tại sao phải mắc tụ CE song song với RE trong mạch khuếch đại E chung?", options: ["A. Để tụ ngắn mạch ở chế độ xoay chiều, loại bỏ hồi tiếp âm AC, giúp tăng hệ số khuếch đại.", "B. Để tụ lọc phẳng điện áp một chiều tại cực E.", "C. Để tăng điện trở vào của mạch ở dải tần số cao.", "D. Để bảo vệ Transistor khỏi quá áp."], answer: 0 },
+            { id: 19, question: "Câu 19: Tầng khuếch đại mắc kiểu E chung có đặc điểm gì về pha tín hiệu?", options: ["A. Tín hiệu ra đồng pha với tín hiệu vào.", "B. Tín hiệu ra đảo pha (ngược chiều) với tín hiệu vào.", "C. Tín hiệu ra vuông pha (lệch 90°) với tín hiệu vào.", "D. Không xác định được độ lệch pha."], answer: 1 },
+            { id: 20, question: "Câu 20: Điều kiện để có thể áp dụng công thức tính gần đúng (bỏ qua dòng Base) cho mạch phân áp E chung ở chế độ DC là gì?", options: ["A. βdc * RC ≥ 10 * R1", "B. βdc * RE ≥ 10 * R2", "C. R1 = R2", "D. IC = IE"], answer: 1 },
+            { id: 21, question: "Câu 21: Điện trở tiếp giáp r'e của Transistor được tính bằng công thức nào ở nhiệt độ phòng?", options: ["A. r'e = 25(mV) / IC(mA)", "B. r'e = 26(mV) / IB(μA)", "C. r'e = 25(mV) / IE(mA)", "D. r'e = IE(mA) / 25(mV)"], answer: 2 },
+            { id: 22, question: "Câu 22: Trở kháng vào của bản thân Transistor mắc E chung (Zvào) xấp xỉ bằng bao nhiêu?", options: ["A. Zvào ≈ βac * r'e", "B. Zvào ≈ r'e", "C. Zvào ≈ RE", "D. Zvào ≈ R1 // R2"], answer: 0 },
+            { id: 23, question: "Câu 23: Công thức hệ số khuếch đại điện áp Ku của mạch E chung (có tải Rt, có tụ CE) xấp xỉ bằng biểu thức nào? (Với Rac = RC // Rt)", options: ["A. Ku ≈ - r'e / Rac", "B. Ku ≈ - Rac / r'e", "C. Ku ≈ βac * RC", "D. Ku ≈ RC / RE"], answer: 1 },
+            { id: 24, question: "Câu 24: Trở kháng ra của mạch mắc kiểu C chung có đặc điểm nổi bật nào?", options: ["A. Rất lớn, bằng RC.", "B. Nhỏ, được tính bằng Zout = r'e // Rac.", "C. Bằng trở kháng vào.", "D. Vô cùng lớn."], answer: 1 },
+            { id: 25, question: "Câu 25: Hệ số khuếch đại điện áp (Ku) của mạch C chung có giá trị như thế nào?", options: ["A. Ku ≈ - βac", "B. Ku = RC / r'e", "C. Ku ≈ 1 (cụ thể là Rac / (r'e + Rac)).", "D. Luôn lớn hơn 100."], answer: 2 },
+            { id: 26, question: "Câu 26: Trong mạch khuếch đại B chung, trở kháng vào của mạch (Zin) xấp xỉ bằng linh kiện/thông số nào?", options: ["A. R1 // R2", "B. RE // r'e", "C. βac * r'e", "D. RC"], answer: 1 },
+            { id: 27, question: "Câu 27: Tầng khuếch đại công suất thường nằm ở vị trí nào trong một bộ khuếch đại nhiều tầng?", options: ["A. Tầng đầu tiên.", "B. Tầng giữa.", "C. Tầng cuối cùng.", "D. Tầng phản hồi âm."], answer: 2 },
+            { id: 28, question: "Câu 28: Tín hiệu đưa vào tầng khuếch đại công suất có đặc điểm gì?", options: ["A. Rất nhỏ (cỡ μV).", "B. Là tín hiệu một chiều.", "C. Tín hiệu vào lớn.", "D. Chỉ là dòng điện, không có điện áp."], answer: 2 },
+            { id: 29, question: "Câu 29: Yêu cầu nào KHÔNG PHẢI là nhiệm vụ chính của tầng khuếch đại công suất?", options: ["A. Cho ra tải một công suất lớn nhất có thể.", "B. Độ méo cho phép.", "C. Hiệu suất cao.", "D. Trở kháng vào phải cực kỳ lớn để chống nhiễu."], answer: 3 },
+            { id: 30, question: "Câu 30: Ở chế độ hoạt động A, điểm làm việc tĩnh (Q) của Transistor nằm ở vị trí nào?", options: ["A. Trong vùng tắt (Cut-off).", "B. Giữa đường tải một chiều.", "C. Ở điểm bão hòa (Saturation).", "D. Ở điểm cắt trục dòng điện."], answer: 1 },
+            { id: 31, question: "Câu 31: Transistor khuếch đại tín hiệu trong bao nhiêu phần của chu kỳ khi hoạt động ở chế độ A?", options: ["A. Cả hai bán chu kỳ (toàn chu kỳ).", "B. Đúng một nửa chu kỳ.", "C. Hơn một nửa chu kỳ nhưng không trọn vẹn.", "D. Nhỏ hơn một nửa chu kỳ."], answer: 0 },
+            { id: 32, question: "Câu 32: Đặc điểm nổi bật của khuếch đại chế độ A là gì?", options: ["A. Hiệu suất rất cao, méo tín hiệu lớn.", "B. Méo nhỏ nhưng hiệu suất thấp (H < 50%).", "C. Chỉ hoạt động với tín hiệu cao tần.", "D. Không tiêu thụ dòng điện khi không có tín hiệu."], answer: 1 },
+            { id: 33, question: "Câu 33: Điểm làm việc tĩnh của Transistor ở chế độ B được đặt ở đâu?", options: ["A. Điểm bão hòa.", "B. Điểm giữa đường tải DC.", "C. Điểm chuyển tiếp giữa vùng tắt và vùng khuếch đại.", "D. Vùng đánh thủng."], answer: 2 },
+            { id: 34, question: "Câu 34: Ở chế độ B, khi không có tín hiệu đầu vào thì dòng tĩnh của Transistor bằng bao nhiêu?", options: ["A. Lớn nhất.", "B. Bằng một nửa dòng cực đại.", "C. Bằng 0.", "D. Không xác định được."], answer: 2 },
+            { id: 35, question: "Câu 35: Ưu điểm và nhược điểm của chế độ B là gì?", options: ["A. Hiệu suất thấp nhưng ít méo.", "B. Hiệu suất cao (H lên tới 78%) nhưng gây ra méo lớn.", "C. Méo tín hiệu nhỏ, công suất ra rất bé.", "D. Hoạt động được cả 2 bán chu kỳ nhưng dễ cháy nổ."], answer: 1 },
+            { id: 36, question: "Câu 36: Để khắc phục tình trạng méo tín hiệu ở chế độ B mà vẫn giữ được hiệu suất tương đối cao, người ta sử dụng chế độ nào và sơ đồ mạch gì?", options: ["A. Chế độ A, mạch vi sai.", "B. Chế độ AB, mạch khuếch đại kiểu đẩy kéo.", "C. Chế độ C, mạch cộng hưởng.", "D. Chế độ B, mạch E chung đơn."], answer: 1 },
+            { id: 37, question: "Câu 37: Ở chế độ AB, tín hiệu được khuếch đại trong khoảng thời gian nào của chu kỳ?", options: ["A. Nhỏ hơn một nửa chu kỳ.", "B. Đúng một nửa chu kỳ.", "C. Hơn một nửa chu kỳ (lớn hơn chế độ B nhưng nhỏ hơn chế độ A).", "D. Toàn bộ chu kỳ."], answer: 2 },
+            { id: 38, question: "Câu 38: Chế độ C có điểm làm việc tĩnh nằm ở đâu và ứng dụng chủ yếu cho mạch nào?", options: ["A. Nằm giữa đường tải; ứng dụng cho Amply âm thanh Audio.", "B. Nằm trong vùng bão hòa; ứng dụng làm công tắc điện tử.", "C. Nằm trong vùng tắt; ứng dụng trong mạch KĐ cao tần có tải là khung cộng hưởng.", "D. Nằm ở điểm cắt; ứng dụng khuếch đại điện áp một chiều."], answer: 2 },
+            { id: 39, question: "Câu 39: Theo Tầng công suất mắc E chung, hoạt động chế độ A, công suất ra xoay chiều cực đại (PR~max) được tính bằng công thức nào?", options: ["A. PR~max = UCC * ICQ", "B. PR~max = (UCC * ICQ) / 2", "C. PR~max = (UCC * ICQ) / 4", "D. PR~max = UCC / ICQ"], answer: 2 },
+            { id: 40, question: "Câu 40: Công suất mà nguồn nuôi DC cung cấp cho mạch KĐ công suất chế độ A là bao nhiêu?", options: ["A. P0 = UCC * ICQ", "B. P0 = (UCC * ICQ) / 4", "C. P0 = ICQ² * RC", "D. P0 = UCC² / RC"], answer: 0 },
+            { id: 41, question: "Câu 41: Hiệu suất cực đại lý thuyết của tầng khuếch đại công suất chế độ A (dùng tải điện trở RC) là bao nhiêu?", options: ["A. 50%", "B. 25%", "C. 78%", "D. 100%"], answer: 1 },
+            { id: 42, question: "Câu 42: Trong thực tế, hiệu suất của mạch KĐ công suất chế độ A tải RC thường như thế nào so với mức cực đại lý thuyết?", options: ["A. Luôn bằng mức lý thuyết.", "B. Lớn hơn mức lý thuyết nhờ linh kiện tốt.", "C. Nhỏ hơn 25% do đã bỏ qua vùng tắt, vùng bão hòa và tổn hao trên RC.", "D. Gần đạt 78%."], answer: 2 },
+            { id: 43, question: "Câu 43: Để tăng hiệu suất cho mạch khuếch đại công suất, tránh tổn hao trên điện trở, người ta thường dùng phương pháp ghép tải nào?", options: ["A. Ghép trực tiếp với điện trở tải lớn.", "B. Ghép qua tụ điện dung lượng nhỏ.", "C. Ghép bằng biến áp.", "D. Ghép qua một Diode."], answer: 2 },
+            { id: 44, question: "Câu 44: Trong sơ đồ mạch khuếch đại công suất đẩy kéo song song, nguyên lý hoạt động luân phiên của 2 Transistor Q1 và Q2 là do đâu?", options: ["A. Do cuộn biến áp đầu vào (BA1) tạo ra hai tín hiệu ở chân B ngược pha nhau.", "B. Do nguồn cung cấp có hai cực âm dương đổi chiều liên tục.", "C. Do Q1 và Q2 là hai loại Transistor khác nhau (NPN và PNP).", "D. Do dùng tụ điện xả nạp liên tục."], answer: 0 },
+            { id: 45, question: "Câu 45: Trong mạch đẩy kéo song song dùng biến áp, ở nửa chu kỳ dương của tín hiệu vào, trạng thái của hai Transistor như thế nào?", options: ["A. Cả Q1 và Q2 đều hoạt động.", "B. Q1 tắt, Q2 hoạt động.", "C. Q1 hoạt động, Q2 tắt.", "D. Cả Q1 và Q2 đều tắt."], answer: 2 },
+            { id: 46, question: "Câu 46: Mạch khuếch đại công suất đẩy kéo nối tiếp dùng Transistor cùng loại bắt buộc phải có tầng nào đứng trước nó?", options: ["A. Tầng khuếch đại dòng điện cường độ cao.", "B. Tầng đảo pha (T3) để đưa tín hiệu ngược pha đến hai Transistor công suất.", "C. Tầng dao động tạo xung vuông.", "D. Tầng lọc thông thấp."], answer: 1 },
+            { id: 47, question: "Câu 47: Yêu cầu về định thiên tĩnh (chế độ DC khi không có tín hiệu vào) đối với mạch đẩy kéo nối tiếp (dùng nguồn đôi hoặc tụ xuất) là gì?", options: ["A. Điện áp DC trên tải phải bằng một nửa nguồn nuôi.", "B. Điện áp DC ở collector của T2 và emiter của T1 phải bằng 0 để không có dòng DC qua tải.", "C. Dòng tĩnh chạy qua tải phải đạt giá trị cực đại.", "D. Phải có một dòng điện nhỏ chạy qua tải để chống méo."], answer: 1 },
+            { id: 48, question: "Câu 48: Ở mạch đẩy kéo nối tiếp nguồn đôi ±UCC, dòng điện chạy như thế nào trong nửa chu kỳ mà T2 thông (T1 tắt)?", options: ["A. Chạy từ +UCC qua T1, qua tải về đất.", "B. Chạy từ +UCC qua tải về -UCC.", "C. Chạy từ đất, qua tải Rt, qua T2 về nguồn -UCC.", "D. Chạy luẩn quẩn giữa T1 và T2."], answer: 2 },
+            { id: 49, question: "Câu 49: Ở mạch đẩy kéo nối tiếp nguồn đôi ±UCC, dòng điện chạy như thế nào trong nửa chu kỳ mà T1 thông (T2 tắt)?", options: ["A. Chạy từ đất qua tải về -UCC.", "B. Chạy từ nguồn +UCC, qua T1, qua tải Rt về đất.", "C. Chạy từ T1 thẳng xuống T2 mà không qua tải.", "D. Chạy từ T1 ngược về tầng đảo pha."], answer: 1 },
+            { id: 50, question: "Câu 50: Đặc điểm chung lớn nhất của các mạch \"đẩy kéo\" (dù mắc song song hay nối tiếp) khi hoạt động ở chế độ B hoặc AB là gì?", options: ["A. Dùng 1 Transistor gánh toàn bộ tải.", "B. Hiệu suất bằng đúng 25%.", "C. Hai Transistor (hoặc 2 nhánh) hoạt động luân phiên nhau để ghép lại thành một chu kỳ tín hiệu hoàn chỉnh trên tải.", "D. Không cần quan tâm đến điểm làm việc tĩnh."], answer: 2 },
+            { id: 51, question: "Câu 51: Sự kết hợp tín hiệu từ hai nửa chu kỳ trong mạch đẩy kéo song song được thực hiện bởi linh kiện nào trước khi đưa ra tải?", options: ["A. Điện trở RC.", "B. Tụ điện nối tầng.", "C. Biến áp đầu ra (BA2).", "D. Mạch lọc LC."], answer: 2 }
+        ];
+       // enddddddddđ
+
+        function App() {
+            const [hasStarted, setHasStarted] = useState(false);
+            const [idx, setIdx] = useState(0);
+            const [score, setScore] = useState(0);
+            const [done, setDone] = useState(false);
+            const [selected, setSelected] = useState(null);
+
+            const check = (optIdx) => {
+                if(selected !== null) return;
+                setSelected(optIdx);
+                if(optIdx === quizData[idx].answer) setScore(s => s + 1);
+            };
+
+            const next = () => {
+                if(idx + 1 < quizData.length) { setIdx(idx + 1); setSelected(null); }
+                else setDone(true);
+            };
+
+            if(!hasStarted) return (
+                <div className="min-h-screen flex items-center justify-center">
+                    <button onClick={() => setHasStarted(true)} 
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-2xl transition-all transform hover:scale-105">
+                        Bắt đầu làm bài
+                    </button>
+                </div>
+            );
+
+            if(done) return (
+                <div className="min-h-screen flex items-center justify-center p-4">
+                    <div className="glass-card p-10 rounded-3xl shadow-2xl text-center max-w-sm w-full">
+                        <h1 className="text-4xl font-bold text-slate-800 mb-4">Kết quả</h1>
+                        <p className="text-6xl font-black text-blue-600 mb-8">{score}/{quizData.length}</p>
+                        <button onClick={() => window.location.reload()} className="bg-slate-800 text-white px-8 py-3 rounded-xl">Làm lại</button>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="max-w-2xl mx-auto p-4 py-12">
+                    <div className="glass-card p-8 rounded-3xl shadow-2xl">
+                        <div className="mb-4 text-sm font-bold text-blue-500 uppercase tracking-widest">Câu {idx + 1} / {quizData.length}</div>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-8">{quizData[idx].question}</h2>
+                        <div className="space-y-4">
+                            {quizData[idx].options.map((o, i) => (
+                                <button key={i} onClick={() => check(i)} 
+                                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${selected === null ? 'bg-white/50 border-white hover:bg-white' : i === quizData[idx].answer ? 'border-green-500 bg-green-200/80' : selected === i ? 'border-red-500 bg-red-200/80' : 'opacity-40'}`}>
+                                    {o}
+                                </button>
+                            ))}
+                        </div>
+                        {selected !== null && <button onClick={next} className="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg">Tiếp theo</button>}
+                    </div>
+                </div>
+            );
+        }
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
