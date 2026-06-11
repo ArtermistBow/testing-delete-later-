@@ -210,7 +210,7 @@
                 <div className="min-h-screen flex flex-col gap-4 items-center justify-center p-4">
                     <h1 className="text-2xl font-bold mb-6 text-slate-800">Chọn nội dung ôn tập</h1>
                     <button onClick={() => startQuiz('old')} className="w-72 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl font-bold shadow-lg">1-10: 51 câu</button>
-                    <button onClick={() => startQuiz('new')} className="w-72 bg-green-600 hover:bg-green-700 text-white p-4 rounded-2xl font-bold shadow-lg">11-20: 20 câu</button>
+                    <button onClick={() => startQuiz('new')} className="w-72 bg-green-600 hover:bg-green-700 text-white p-4 rounded-2xl font-bold shadow-lg">11-20:63 câu</button>
                     <button onClick={() => startQuiz('new2')} className="w-72 bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-2xl font-bold shadow-lg">21-30: 40 câu</button>
                     <button className="w-72 bg-gray-300 text-white p-4 rounded-2xl font-bold cursor-not-allowed">31-40: Không có gì</button>
                 </div>
@@ -234,7 +234,7 @@
                         <div className="space-y-4">
                             {data[idx].options.map((o, i) => (
                                 <button key={i} onClick={() => check(i)} 
-                                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${selected === null ? 'bg-white/50 border-white hover:bg-white' : i === data[idx].answer ? 'border-green-500 bg-green-200/80' : selected === i ? 'border-red-500 bg-red-200/80' : 'opacity-40'}`}>
+                                    className={`w-full text- left p-5 rounded-2xl border-2 transition-all duration-200 ${selected === null ? 'bg-white/50 border-white hover:bg-white' : i === data[idx].answer ? 'border-green-500 bg-green-200/80' : selected === i ? 'border-red-500 bg-red-200/80' : 'opacity-40'}`}>
                                     {o}
                                 </button>
                             ))}
