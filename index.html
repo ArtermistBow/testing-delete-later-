@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -8,17 +16,8 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* Tạo background loang màu xanh - vàng - trắng */
-        body {
-            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #ffffff 100%);
-            min-height: 100vh;
-        }
-        /* Hiệu ứng kính mờ cho thẻ chứa nội dung */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
+        body { background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #ffffff 100%); min-height: 100vh; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
     </style>
 </head>
 <body>
@@ -27,9 +26,7 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // Dữ liệu quiz (Giữ nguyên như cũ)
-
-        const quizData = [
+        const quizOld = [
             { id: 1, question: "Câu 1: Theo định nghĩa, mạch khuếch đại có hệ thống biến đổi năng lượng như thế nào?", options: ["A. Biến đổi năng lượng xoay chiều thành một chiều.", "B. Biến đổi năng lượng một chiều thành một chiều với biên độ lớn hơn.", "C. Biến đổi năng lượng một chiều thành xoay chiều dưới sự điều khiển của tín hiệu vào.", "D. Biến đổi năng lượng nhiệt thành điện năng."], answer: 2 },
             { id: 2, question: "Câu 2: Năng lượng cung cấp để mạch khuếch đại tạo ra công suất ở đầu ra được lấy từ đâu?", options: ["A. Tín hiệu đầu vào.", "B. Nguồn cung cấp một chiều (nguồn nuôi).", "C. Tín hiệu phản hồi.", "D. Trở kháng của tải."], answer: 1 },
             { id: 3, question: "Câu 3: Mạch khuếch đại lý tưởng yêu cầu dạng tín hiệu đầu ra phải như thế nào so với dạng tín hiệu đầu vào?", options: ["A. Giống hệt nhau (không gây méo tín hiệu).", "B. Ngược pha hoàn toàn và bị nén biên độ.", "C. Méo dạng để tăng hiệu suất.", "D. Trễ pha 90 độ."], answer: 0 },
@@ -82,40 +79,155 @@
             { id: 50, question: "Câu 50: Đặc điểm chung lớn nhất của các mạch \"đẩy kéo\" (dù mắc song song hay nối tiếp) khi hoạt động ở chế độ B hoặc AB là gì?", options: ["A. Dùng 1 Transistor gánh toàn bộ tải.", "B. Hiệu suất bằng đúng 25%.", "C. Hai Transistor (hoặc 2 nhánh) hoạt động luân phiên nhau để ghép lại thành một chu kỳ tín hiệu hoàn chỉnh trên tải.", "D. Không cần quan tâm đến điểm làm việc tĩnh."], answer: 2 },
             { id: 51, question: "Câu 51: Sự kết hợp tín hiệu từ hai nửa chu kỳ trong mạch đẩy kéo song song được thực hiện bởi linh kiện nào trước khi đưa ra tải?", options: ["A. Điện trở RC.", "B. Tụ điện nối tầng.", "C. Biến áp đầu ra (BA2).", "D. Mạch lọc LC."], answer: 2 }
         ];
-       // enddddddddđ
+
+        const quizNew = [
+            { id: 1, question: "Câu 1: Mạch khuếch đại công suất đẩy kéo nối tiếp dùng BJT khác loại sử dụng cặp Transistor có đặc điểm gì?", options: ["A. Hai Transistor NPN.", "B. Hai Transistor PNP.", "C. Một Transistor NPN và một Transistor PNP.", "D. Hai Transistor JFET."], answer: 2 },
+            { id: 2, question: "Câu 2: Trong nửa chu kỳ đầu khi tín hiệu vào là dương, trạng thái của hai Transistor T1 và T2 như thế nào?", options: ["A. T1 ngắt, T2 hoạt động.", "B. T1 hoạt động, T2 ngắt.", "C. Cả T1 và T2 cùng hoạt động.", "D. Cả T1 và T2 cùng ngắt."], answer: 1 },
+            { id: 3, question: "Câu 3: Trong nửa chu kỳ tín hiệu vào dương, dòng điện cung cấp cho tải Rt đi từ đâu?", options: ["A. Từ tụ C qua T2 xuống tải.", "B. Từ nguồn EC qua T1, qua tải Rt xuống mass.", "C. Từ mass đi ngược lên qua tải Rt.", "D. Từ cực B của T1 sang cực B của T2."], answer: 1 },
+            { id: 4, question: "Câu 4: Trong nửa chu kỳ sau khi tín hiệu vào là âm, linh kiện nào đóng vai trò là nguồn thứ cấp cung cấp năng lượng cho tải?", options: ["A. Nguồn cung cấp EC.", "B. Cuộn cảm thứ cấp.", "C. Tụ điện C.", "D. Tụ nối tầng C1."], answer: 2 },
+            { id: 5, question: "Câu 5: Điều kiện để tụ C có thể trở thành nguồn thứ cấp trong mạch đẩy kéo nối tiếp là gì?", options: ["A. Tụ phải có điện dung cực nhỏ để xả nạp nhanh.", "B. Tụ phải có giá trị điện dung đủ lớn.", "C. Tụ phải được nối song song với tải.", "D. Tụ phải là tụ xoay."], answer: 1 },
+            { id: 6, question: "Câu 6: Khi có tín hiệu vào, điện áp ở hai đầu tụ C trong mạch đẩy kéo nối tiếp xấp xỉ bằng bao nhiêu?", options: ["A. Bằng điện áp nguồn EC.", "B. Bằng 1/2 điện áp nguồn EC.", "C. Bằng 1/4 điện áp nguồn EC.", "D. Bằng 0."], answer: 1 },
+            { id: 7, question: "Câu 7: Dòng điện chạy qua tải ở nửa chu kỳ tín hiệu âm có chiều như thế nào so với dòng điện ở nửa chu kỳ dương?", options: ["A. Cùng chiều.", "B. Đảo chiều.", "C. Vuông góc.", "D. Dòng điện bằng 0."], answer: 1 },
+            { id: 8, question: "Câu 8: Công suất cực đại của tín hiệu ra của tầng khuếch đại đẩy kéo nối tiếp chế độ B được tính bằng công thức nào?", options: ["A. PR-max = EC^2 / (2Rt)", "B. PR-max = EC^2 / (4Rt)", "C. PR-max = EC^2 / (8Rt)", "D. PR-max = EC^2 / (2*pi*Rt)"], answer: 2 },
+            { id: 9, question: "Câu 9: Công suất mà nguồn cấp cho mạch trong chế độ B được tính bằng công thức nào?", options: ["A. P0 = EC^2 / (2*pi*Rt)", "B. P0 = EC * Imax", "C. P0 = EC^2 / (8Rt)", "D. P0 = I^2 * Rt"], answer: 0 },
+            { id: 10, question: "Câu 10: Hiệu suất cực đại của tầng khuếch đại đẩy kéo nối tiếp chế độ B đạt được là bao nhiêu?", options: ["A. 50%", "B. 25%", "C. 78,5%", "D. 100%"], answer: 2 },
+            { id: 11, question: "Câu 11: Bộ khuếch đại thuật toán (KĐTT) lý tưởng có hệ số khuếch đại điện áp (K0) bằng bao nhiêu?", options: ["A. Bằng 1", "B. Bằng 0", "C. Rất lớn (tiến tới ∞)", "D. Âm vô cực"], answer: 2 },
+            { id: 12, question: "Câu 12: Trở kháng vào (ZV) và trở kháng ra (ZR) của bộ KĐTT lý tưởng có giá trị như thế nào?", options: ["A. ZV = 0 ; ZR = ∞", "B. ZV = ∞ ; ZR = ∞", "C. ZV = ∞ ; ZR = 0", "D. ZV = 0 ; ZR = 0"], answer: 2 },
+            { id: 13, question: "Câu 13: Đặc tuyến truyền đạt của bộ KĐTT thực tế chia làm mấy miền cơ bản?", options: ["A. 1 miền tuyến tính.", "B. 2 miền bão hòa.", "C. 3 miền.", "D. 4 miền khuếch đại."], answer: 2 },
+            { id: 14, question: "Câu 14: Khi điện áp đầu vào chênh lệch vượt qua ranh giới miền tuyến tính, điện áp đầu ra sẽ ở trạng thái nào?", options: ["A. Dao động liên tục.", "B. Bằng 0V.", "C. Tiếp tục tăng tuyến tính.", "D. Bão hòa ở mức +Urmax hoặc -Urmax."], answer: 3 },
+            { id: 15, question: "Câu 15: Điều kiện cân bằng biên độ để mạch tạo dao động điều hòa theo phương pháp hồi tiếp dương là gì?", options: ["A. K / Kht = 1", "B. K * Kht = 1", "C. K + Kht = 0", "D. K * Kht = ∞"], answer: 1 },
+            { id: 16, question: "Câu 16: Điều kiện cân bằng pha (điều kiện hồi tiếp dương) là gì?", options: ["A. φK + φht = π", "B. φK + φht = 2nπ", "C. φK - φht = π/2", "D. φK / φht = 1"], answer: 1 },
+            { id: 17, question: "Câu 17: Để trạng thái xác lập biên độ dao động là không đổi, mạch dao động cần thêm khâu nào?", options: ["A. Tầng khuếch đại công suất phụ.", "B. Khâu điều chỉnh hoặc phần tử phi tuyến.", "C. Một bộ lọc thông thấp.", "D. Tụ bù công suất."], answer: 1 },
+            { id: 18, question: "Câu 18: Yêu cầu về tính ổn định của mạch tự tạo dao động điều hòa là gì?", options: ["A. Phụ thuộc nhiều vào nhiệt độ.", "B. Biên độ và tần số ổn định cao.", "C. Chỉ cần tần số ổn định.", "D. Dễ bị ảnh hưởng bởi tải."], answer: 1 },
+            { id: 19, question: "Câu 19: Biện pháp nào KHÔNG được dùng để đạt các yêu cầu tạo dao động chuẩn xác?", options: ["A. Dùng nguồn ổn áp.", "B. Mắc thêm tầng đệm.", "C. Dùng linh kiện có sai số lớn.", "D. Dùng các phần tử ổn nhiệt."], answer: 2 },
+            { id: 20, question: "Câu 20: Phương pháp truyền thống nhất để tạo ra mạch dao động là sử dụng cấu trúc gì?", options: ["A. Hồi tiếp âm hoàn toàn.", "B. Mạch KĐTT không hồi tiếp.", "C. Mạch hồi tiếp dương.", "D. Ghép quang."], answer: 2 },
+            { id: 21, question: "Câu 21: Mạch dao động hình sin ghép biến áp dùng hệ thống nào để chọn lọc tần số?", options: ["A. Mạch lọc RC.", "B. Hệ thống khung cộng hưởng LC.", "C. Khối thạch anh kép.", "D. Mạch dập xung Diode."], answer: 1 },
+            { id: 22, question: "Câu 22: Tần số dao động cộng hưởng của mạch được tính theo công thức nào?", options: ["A. f = 2*pi*sqrt(LC)", "B. f = 1 / (pi*sqrt(LC))", "C. f = 1 / (2*pi*sqrt(LC))", "D. f = LC / (2*pi)"], answer: 2 },
+            { id: 23, question: "Câu 23: Trong sơ đồ mạch, tín hiệu trên Colector có pha như thế nào so với tín hiệu ở Bazo?", options: ["A. Đồng pha.", "B. Ngược pha.", "C. Lệch pha 90 độ.", "D. Không xác định."], answer: 1 },
+            { id: 24, question: "Câu 24: Để thỏa mãn điều kiện cân bằng pha, cuộn dây hồi tiếp L1 phải thực hiện điều gì?", options: ["A. Quấn cùng chiều.", "B. Quấn ngược chiều với cuộn sơ cấp.", "C. Số vòng dây gấp đôi.", "D. Không có lõi từ."], answer: 1 },
+            { id: 25, question: "Câu 25: Tín hiệu hồi tiếp dương được đưa về giữa cực B và E của Transistor thông qua linh kiện nào?", options: ["A. Điện trở R1.", "B. Tụ nối C1.", "C. Cuộn cảm L.", "D. Tụ Cr."], answer: 1 },
+            { id: 26, question: "Câu 26: Mạch dao động ba điểm sẽ thỏa mãn điều kiện cân bằng pha khi các điện kháng X1, X2, X3 có tính chất gì?", options: ["A. Cùng dấu.", "B. X1, X2 > 0 và X3 < 0.", "C. X1, X3 > 0 và X2 < 0.", "D. Tổng = 0."], answer: 1 },
+            { id: 27, question: "Câu 27: Mạch dao động có 2 phần tử điện cảm và 1 phần tử điện dung được gọi là gì?", options: ["A. Ba điểm điện dung.", "B. Ba điểm điện cảm.", "C. Cầu Wien.", "D. Ghép biến áp."], answer: 1 },
+            { id: 28, question: "Câu 28: Nếu X1, X2 là tụ điện, để mạch tạo được dao động thì X3 bắt buộc là gì?", options: ["A. Điện trở.", "B. Tụ điện.", "C. Cuộn cảm.", "D. Transistor."], answer: 2 },
+            { id: 29, question: "Câu 29: Mạch dao động cầu Wien bao gồm những khâu cơ bản nào?", options: ["A. KĐ và lọc thông thấp.", "B. KĐ và khâu hồi tiếp (mạng RC).", "C. Tầng vi sai và công suất.", "D. Mạng LC và tạo xung."], answer: 1 },
+            { id: 30, question: "Câu 30: Hệ số khuếch đại của khâu KĐ dùng Op-amp trong mạch cầu Wien được tính bằng?", options: ["A. -R2/R1", "B. 1 + R2/R1", "C. R1/(R1+R2)", "D. 1/(RC)"], answer: 1 },
+            { id: 31, question: "Câu 31: Khâu khuếch đại của mạch cầu Wien dùng chân không đảo của Op-amp nên pha tín hiệu tạo ra bằng bao nhiêu?", options: ["A. pi/2", "B. pi", "C. 0", "D. 2*pi"], answer: 2 },
+            { id: 32, question: "Câu 32: Tần số dao động của mạch cầu Wien phụ thuộc vào mạng RC như thế nào?", options: ["A. 1/(2*pi*sqrt(RC))", "B. 1/(2*pi*RC)", "C. 2*pi*RC", "D. R/(2*pi*C)"], answer: 1 },
+            { id: 33, question: "Câu 33: Tại tần số dao động w=1/(RC), hệ số hồi tiếp của mạng Wien có biên độ bằng bao nhiêu?", options: ["A. 1", "B. 1/2", "C. 1/3", "D. 3"], answer: 2 },
+            { id: 34, question: "Câu 34: Để mạch cầu Wien thỏa mãn điều kiện cân bằng biên độ, tỉ lệ giữa các điện trở phản hồi phải là bao nhiêu?", options: ["A. R2=R1", "B. R2=2R1", "C. R2=3R1", "D. R2=R1/2"], answer: 1 },
+            { id: 35, question: "Câu 35: Thạch anh có tính chất vật lý đặc biệt nào?", options: ["A. Phát sáng.", "B. Siêu dẫn.", "C. Áp điện.", "D. Nhạy cảm từ trường."], answer: 2 },
+            { id: 36, question: "Câu 36: Tính chất áp điện của thạch anh là gì?", options: ["A. Điện sinh nhiệt.", "B. Điện trường sinh dao động cơ và ngược lại.", "C. Trở kháng thay đổi.", "D. Đổi màu."], answer: 1 },
+            { id: 37, question: "Câu 37: Trong sơ đồ tương đương của thạch anh, tụ Cp mắc song song biểu thị cho gì?", options: ["A. Dây dẫn.", "B. Điện dung bản cực.", "C. Vỏ bọc.", "D. Linh kiện rời."], answer: 1 },
+            { id: 38, question: "Câu 38: Các thông số cơ học của bản thân viên thạch anh phụ thuộc vào yếu tố nào?", options: ["A. Điện áp.", "B. Kích thước và cách cắt.", "C. Nhiệt độ.", "D. Dòng điện."], answer: 1 },
+            { id: 39, question: "Câu 39: Tần số dao động của thạch anh có quan hệ thế nào với kích thước?", options: ["A. Lớn thì tần số cao.", "B. Nhỏ thì tần số cao.", "C. Không ảnh hưởng.", "D. Chỉ phụ thuộc độ dày."], answer: 1 },
+            { id: 40, question: "Câu 40: Thạch anh có bao nhiêu tần số cộng hưởng riêng trên lý thuyết?", options: ["A. 1.", "B. 2.", "C. 3.", "D. Vô số."], answer: 1 },
+            { id: 41, question: "Câu 41: Phẩm chất (Q) của thạch anh so với khung LC như thế nào?", options: ["A. Thấp hơn.", "B. Tương đương.", "C. Cao hơn nhiều.", "D. Bằng 1."], answer: 2 },
+            { id: 42, question: "Câu 42: Khái niệm cơ bản của mạch đa hài đợi là gì?", options: ["A. 2 trạng thái ổn định.", "B. Không ổn định.", "C. 1 ổn định, 1 không.", "D. Khuếch đại tuyến tính."], answer: 2 },
+            { id: 43, question: "Câu 43: Mạch đa hài đợi chuyển trạng thái dưới điều kiện nào?", options: ["A. Cấp nguồn.", "B. Tụ nạp đầy.", "C. Xung kích thích.", "D. Tự động."], answer: 2 },
+            { id: 44, question: "Câu 44: Khi không có xung kích, đầu ra Op-amp thường giữ ở mức?", options: ["A. 0V.", "B. Bão hòa dương.", "C. Bão hòa âm.", "D. Nguồn thứ cấp."], answer: 2 },
+            { id: 45, question: "Câu 45: Trong trạng thái ổn định, trạng thái phân cực của Diot D là gì?", options: ["A. Đánh thủng.", "B. Phân cực ngược.", "C. Phân cực thuận.", "D. Lúc đóng lúc ngắt."], answer: 2 },
+            { id: 46, question: "Câu 46: Khi có xung kích làm Up > Un, đầu ra Op-amp lật sang?", options: ["A. 0V.", "B. Bão hòa dương.", "C. Giữ nguyên âm.", "D. Dao động hình sin."], answer: 1 },
+            { id: 47, question: "Câu 47: Khi đầu ra ở trạng thái bão hòa dương, tụ C làm gì?", options: ["A. Phóng qua Diot.", "B. Ngừng.", "C. Nạp điện.", "D. Đổi chiều."], answer: 2 },
+            { id: 48, question: "Câu 48: Mạch đa hài đợi lật về ổn định khi nào?", options: ["A. Xung thứ hai.", "B. Uc vượt ngưỡng Up.", "C. Nạp đầy.", "D. Nhiệt độ đổi."], answer: 1 },
+            { id: 49, question: "Câu 49: Thời gian mạch ở trạng thái không ổn định tính bằng?", options: ["A. Tx = RC ln(1+R1/R2).", "B. 2pi sqrt(RC).", "C. RC ln(1+R2/R1).", "D. R1C/R2."], answer: 0 },
+            { id: 50, question: "Câu 50: Thời gian từ lúc lật về ổn định đến khi Uc xả hết 0V là?", options: ["A. Trễ.", "B. Hồi phục.", "C. Chu kỳ.", "D. Quá độ."], answer: 1 },
+            { id: 51, question: "Câu 51: Mạch đa hài tự dao động có bao nhiêu trạng thái ổn định?", options: ["A. 2.", "B. 1.", "C. 0.", "D. Phụ thuộc xung."], answer: 2 },
+            { id: 52, question: "Câu 52: Điện áp Ub1 mang dấu gì để giữ T1 tắt?", options: ["A. Dương.", "B. Bằng 0.", "C. Âm.", "D. Bằng Ucc."], answer: 2 },
+            { id: 53, question: "Câu 53: Yếu tố tạo áp âm Ub1 là?", options: ["A. Tụ C1 nạp.", "B. Tụ C2 phóng.", "C. T1.", "D. Nguồn âm."], answer: 1 },
+            { id: 54, question: "Câu 54: Khi T1 tắt, T2 thông, tụ C1 làm gì?", options: ["A. Phóng qua R4.", "B. Nạp.", "C. Chiều ngược lại.", "D. Không tham gia."], answer: 1 },
+            { id: 55, question: "Câu 55: Khi T1 ngắt, Ura1 tăng nhanh vì?", options: ["A. C2 cấp.", "B. T1 tự sinh.", "C. Dòng nạp tụ C1.", "D. Cuộn cảm."], answer: 2 },
+            { id: 56, question: "Câu 56: Sự kiện lật trạng thái bắt đầu khi?", options: ["A. C1 đầy.", "B. Phóng C2 kết thúc, Ub1 > 0.", "C. Nóng lên.", "D. Xung kích."], answer: 1 },
+            { id: 57, question: "Câu 57: Khi T1 bắt đầu dẫn, quá trình lật diễn ra thế nào?", options: ["A. Cộng hưởng.", "B. Hồi tiếp âm.", "C. Hồi tiếp dương cực nhanh.", "D. Tụ triệt tiêu."], answer: 2 },
+            { id: 58, question: "Câu 58: Sự giảm Ura1 khóa T2 qua linh kiện?", options: ["A. R2.", "B. C1.", "C. Dây.", "D. Emitter."], answer: 1 },
+            { id: 59, question: "Câu 59: Tốc độ lật trạng thái BJT là?", options: ["A. Từ từ.", "B. Ngẫu nhiên.", "C. Cực nhanh.", "D. Nhiệt độ."], answer: 2 },
+            { id: 60, question: "Câu 60: Điều kiện để xung vuông là?", options: ["A. R1=R3, R2=R4.", "B. R1>>R3, R4>>R2.", "C. R1<<R3, R4<<R2.", "D. Bốn trở bằng nhau."], answer: 2 },
+            { id: 61, question: "Câu 61: Dạng tín hiệu ra là gì?", options: ["A. Sin.", "B. Răng cưa.", "C. Vuông.", "D. Tam giác."], answer: 2 },
+            { id: 62, question: "Câu 62: Tụ giữ cho T1 ngắt là?", options: ["A. C1.", "B. C2.", "C. Cv.", "D. Cả hai."], answer: 1 },
+            { id: 63, question: "Câu 63: Chu kỳ dao động phụ thuộc vào?", options: ["A. Nguồn.", "B. Các cặp RC.", "C. Hskđ.", "D. Trở trong nguồn."], answer: 1 }
+        ];
+
+        const quizNew2 = [
+            { id: 1, question: "Câu 1: Trong mạch dao động đa hài dùng bộ khuếch đại thuật toán (Op-amp), tụ điện C được mắc vào cực nào của IC?", options: ["A. Cực thuận (+)", "B. Cực đảo (-)", "C. Cực ngõ ra (Ura)", "D. Nối tiếp với nguồn nuôi"], answer: 1 },
+            { id: 2, question: "Câu 2: Tín hiệu phản hồi dương trong mạch đa hài Op-amp được lấy từ ngõ ra đưa về cửa thuận (+) thông qua cụm linh kiện nào?", options: ["A. Tụ điện C và điện trở R", "B. Cầu phân áp bằng điốt", "C. Mạch phân áp bằng điện trở R1, R2", "D. Cuộn cảm L"], answer: 2 },
+            { id: 3, question: "Câu 3: Khi ngõ ra của Op-amp đang ở trạng thái bão hòa dương (Ura = +Urmax), điện áp đặt vào cửa thuận Up(+) được tính bằng công thức nào?", options: ["A. Up(+) = +Urmax * R2/(R1+R2)", "B. Up(+) = +Urmax * R1/(R1+R2)", "C. Up(+) = +Urmax * (R1+R2)", "D. Up(+) = +Urmax / R1"], answer: 1 },
+            { id: 4, question: "Câu 4: Trong sơ đồ mạch này, quá trình tụ C nạp điện áp làm cho Uc tăng lên. Sự kiện nào sẽ khiến ngõ ra đột biến lật trạng thái từ +Urmax xuống -Urmax?", options: ["A. Khi tụ C nạp đầy bằng điện áp nguồn nuôi.", "B. Khi Uc vừa vượt qua điện áp ngưỡng cửa thuận Up(+).", "C. Khi điện trở R bị nóng lên.", "D. Khi có xung kích thích từ bên ngoài đưa vào."], answer: 1 },
+            { id: 5, question: "Câu 5: Ở đầu ra (Ura) của mạch dao động đa hài Op-amp, ta thu được dạng tín hiệu gì?", options: ["A. Sóng hình sin chuẩn.", "B. Dãy xung vuông xen kẽ.", "C. Sóng răng cưa.", "D. Sóng tam giác."], answer: 1 },
+            { id: 6, question: "Câu 6: Nếu đo tín hiệu trên hai đầu tụ điện C (Uc), ta sẽ thấy dạng sóng gì?", options: ["A. Xung vuông hoàn toàn.", "B. Đường thẳng một chiều (DC).", "C. Dạng sóng nạp xả luân phiên (gần giống tam giác/răng cưa).", "D. Xung kim nhọn."], answer: 2 },
+            { id: 7, question: "Câu 7: Công thức tổng quát xác định độ rộng xung tx của mạch đa hài này là gì?", options: ["A. tx = RC * ln(1 + 2R1/R2)", "B. tx = RC * ln(1 + R1/R2)", "C. tx = 1/(2*pi*sqrt(RC))", "D. tx = R1*R2*C"], answer: 0 },
+            { id: 8, question: "Câu 8: Theo tài liệu, nếu chọn hai điện trở phân áp bằng nhau (R1 = R2), độ rộng xung tx và chu kỳ dao động T xấp xỉ bằng bao nhiêu?", options: ["A. tx ≈ 0.5 RC và T ≈ RC", "B. tx ≈ 1.1 RC và T ≈ 2.2 RC", "C. tx ≈ 2 RC và T ≈ 4 RC", "D. tx = RC và T = 2*pi*RC"], answer: 1 },
+            { id: 9, question: "Câu 9: Chu kỳ T của một tín hiệu xung răng cưa được tạo thành từ tổng của hai khoảng thời gian nào?", options: ["A. Thời gian bão hòa và thời gian tắt.", "B. Thời gian quét (tqt) và thời gian phục hồi (tqn).", "C. Thời gian xung vuông và khoảng không.", "D. Thời gian trễ và thời gian lưu."], answer: 1 },
+            { id: 10, question: "Câu 10: Yêu cầu kỹ thuật đối với thời gian hồi phục (tqn) của xung răng cưa là gì?", options: ["A. Càng dài càng tốt.", "B. Phải bằng đúng thời gian quét.", "C. Càng nhỏ càng tốt.", "D. Phải bằng chu kỳ T."], answer: 2 },
+            { id: 11, question: "Câu 11: Thông số epsilon đo lường hệ số méo không đường thẳng của xung răng cưa có yêu cầu như thế nào?", options: ["A. Bằng 1.", "B. Càng lớn càng tốt.", "C. Càng nhỏ càng tốt.", "D. Không quan trọng."], answer: 2 },
+            { id: 12, question: "Câu 12: Để tạo được tín hiệu xung răng cưa có sườn nạp thẳng tuyến tính lý tưởng, quá trình nạp điện cho tụ C phải thỏa mãn điều kiện gì?", options: ["A. Nạp qua điện trở rất nhỏ.", "B. Nạp qua nguồn dòng điện ổn định.", "C. Nạp bằng nguồn AC.", "D. Nạp qua điốt phân cực ngược."], answer: 1 },
+            { id: 13, question: "Câu 13: Hiệu suất eta của mạch tạo xung răng cưa được tính bằng biểu thức nào?", options: ["A. eta = Uqmax / EC", "B. eta = Uqmax * EC", "C. eta = EC / Uqmax", "D. eta = tqt / T"], answer: 0 },
+            { id: 14, question: "Câu 14: Theo định nghĩa, điều chế là quá trình gì?", options: ["A. Biến đổi AC thành DC.", "B. Ghi tin tức vào dao động cao tần.", "C. Khuếch đại âm thanh.", "D. Cắt bỏ tín hiệu nhiễu."], answer: 1 },
+            { id: 15, question: "Câu 15: Lý do vật lý cốt lõi phải điều chế tín hiệu trước khi truyền đi xa là gì?", options: ["A. Tiết kiệm điện.", "B. Tin tức tần số thấp không thể tự bức xạ đi xa.", "C. Bảo mật thông tin.", "D. Tăng chất lượng âm thanh."], answer: 1 },
+            { id: 16, question: "Câu 16: Dao động mang tin tức đi xa được gọi là?", options: ["A. Tín hiệu nền.", "B. Tần số vô biên.", "C. Tải tin.", "D. Dao động ký."], answer: 2 },
+            { id: 17, question: "Câu 17: Điều biên (AM) thay đổi thông số nào của tải tin?", options: ["A. Chỉ pha.", "B. Biên độ.", "C. Tần số.", "D. Cả biên độ, tần số, pha."], answer: 1 },
+            { id: 18, question: "Câu 18: Phổ của tín hiệu AM chứa?", options: ["A. Vạch âm tần.", "B. Vạch cao tần.", "C. Vạch tải tin và hai dải biên.", "D. Vô số hài."], answer: 2 },
+            { id: 19, question: "Câu 19: Mạch điều biên vòng dùng?", options: ["A. 1 điốt.", "B. 2 điốt.", "C. 4 điốt.", "D. Zener."], answer: 2 },
+            { id: 20, question: "Câu 20: Điều biên vòng cân bằng triệt tiêu thành phần nào?", options: ["A. Tải tin.", "B. Tín hiệu mang tin.", "C. Âm tần.", "D. Áp một chiều."], answer: 0 },
+            { id: 21, question: "Câu 21: Điều tần (FM) và điều pha (PM) thay đổi?", options: ["A. Biên độ.", "B. Tần số và pha.", "C. Tần số thấp.", "D. Trộn tín hiệu."], answer: 1 },
+            { id: 22, question: "Câu 22: Linh kiện điều tần dải cao?", options: ["A. Varicap.", "B. Tụ gốm.", "C. Cuộn cảm.", "D. Biến áp."], answer: 0 },
+            { id: 23, question: "Câu 23: Transistor điện kháng có trở kháng vào tương đương?", options: ["A. Điện trở.", "B. Tụ điện.", "C. Cuộn cảm.", "D. KĐ áp."], answer: 2 },
+            { id: 24, question: "Câu 24: Nguyên lý Transistor điện kháng là?", options: ["A. Us->S->L->f.", "B. Us->Dòng->Nhiệt->f.", "C. Quay pha.", "D. Tụ điện."], answer: 0 },
+            { id: 25, question: "Câu 25: Tách sóng là quá trình ngược lại với?", options: ["A. Chỉnh lưu.", "B. KĐ công suất.", "C. Lọc.", "D. Điều chế."], answer: 3 },
+            { id: 26, question: "Câu 26: Diode trong mạch tách sóng có vai trò?", options: ["A. KĐ.", "B. Dẫn nửa chu kỳ dương.", "C. Lọc.", "D. Ổn áp."], answer: 1 },
+            { id: 27, question: "Câu 27: Hằng số RC trong mạch tách sóng phải?", options: ["A. Lớn > T âm tần.", "B. Nhỏ < T cao tần.", "C. Nằm giữa cao tần và âm tần.", "D. Bằng 0."], answer: 2 },
+            { id: 28, question: "Câu 28: Khối nguồn chuẩn gồm?", options: ["A. Ổn áp-Lọc-BA-Chỉnh lưu.", "B. BA-Chỉnh lưu-Lọc-Ổn áp.", "C. Chỉnh lưu-BA-Ổn áp-Lọc.", "D. BA-Lọc-Chỉnh lưu-Ổn áp."], answer: 1 },
+            { id: 29, question: "Câu 29: Chỉnh lưu là?", options: ["A. Tăng áp.", "B. San bằng.", "C. AC thành DC nhấp nhô.", "D. Ổn áp."], answer: 2 },
+            { id: 30, question: "Câu 30: Mạch lọc có nhiệm vụ?", options: ["A. Loại AC.", "B. San bằng DC.", "C. Tạo răng cưa.", "D. Bảo vệ."], answer: 1 },
+            { id: 31, question: "Câu 31: Ổn áp nối tiếp gồm các khối?", options: ["A. BA, Cầu, Tụ.", "B. PTHC, KĐ, Mẫu, Chuẩn.", "C. Tách sóng, Dao động.", "D. Rơ le."], answer: 1 },
+            { id: 32, question: "Câu 32: Tín hiệu sai lệch tạo ra từ?", options: ["A. So sánh lưới với tải.", "B. So sánh hồi tiếp với chuẩn.", "C. Lấy đạo hàm.", "D. Lọc."], answer: 1 },
+            { id: 33, question: "Câu 33: KĐ sai lệch có vai trò?", options: ["A. KĐ dòng.", "B. KĐ delta U.", "C. KĐ âm thanh.", "D. KĐ vô cực."], answer: 1 },
+            { id: 34, question: "Câu 34: Khi điện áp ra tăng, PTHC sẽ?", options: ["A. Tăng trở kháng.", "B. Giảm trở kháng.", "C. Đánh thủng Zener.", "D. Tự ngắt."], answer: 0 },
+            { id: 35, question: "Câu 35: Ổn áp song song có cấu trúc?", options: ["A. Transistor nối tiếp tải.", "B. Transistor song song tải.", "C. Không dùng Transistor.", "D. Chỉ dùng điốt."], answer: 1 },
+            { id: 36, question: "Câu 36: Khi U ra tăng, Ube của Transistor song song sẽ?", options: ["A. Tăng.", "B. Giảm.", "C. Giữ nguyên.", "D. Đánh thủng."], answer: 1 },
+            { id: 37, question: "Câu 37: Transistor công suất trong mạch nối tiếp là?", options: ["A. Mạch hồi tiếp.", "B. Phần tử chuẩn.", "C. KĐ sai lệch.", "D. PTHC nối tiếp tải."], answer: 3 },
+            { id: 38, question: "Câu 38: Công thức UR ổn áp nối tiếp là?", options: ["A. Ur = Uz + Ube.", "B. Ur = Uin - Uz.", "C. Ur = I * Uz.", "D. Ur = Ube - Uz."], answer: 0 },
+            { id: 39, question: "Câu 39: Nếu Ur bị tụt, mạch phản ứng?", options: ["A. T dẫn mạnh hơn (kéo áp lên).", "B. T ngắt.", "C. Zener ngắt.", "D. Tụ xả." ], answer: 0 },
+            { id: 40, question: "Câu 40: Linh kiện bắt buộc trong mạch nguồn chuẩn là?", options: ["A. Tụ hóa.", "B. Diode nắn.", "C. Diode Zener.", "D. Cuộn cảm."], answer: 2 }
+        ];
 
         function App() {
-            const [hasStarted, setHasStarted] = useState(false);
+            const [data, setData] = useState(null);
             const [idx, setIdx] = useState(0);
             const [score, setScore] = useState(0);
             const [done, setDone] = useState(false);
             const [selected, setSelected] = useState(null);
 
+            const startQuiz = (type) => {
+                if (type === 'old') setData(quizOld);
+                else if (type === 'new') setData(quizNew);
+                else if (type === 'new2') setData(quizNew2);
+            };
+
             const check = (optIdx) => {
                 if(selected !== null) return;
                 setSelected(optIdx);
-                if(optIdx === quizData[idx].answer) setScore(s => s + 1);
+                if(optIdx === data[idx].answer) setScore(s => s + 1);
             };
 
             const next = () => {
-                if(idx + 1 < quizData.length) { setIdx(idx + 1); setSelected(null); }
+                if(idx + 1 < data.length) { setIdx(idx + 1); setSelected(null); }
                 else setDone(true);
             };
 
-            // if(!hasStarted) return (
-            //     <div className="min-h-screen flex items-center justify-center">
-            //         <button onClick={() => setHasStarted(true)} 
-            //             className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-2xl transition-all transform hover:scale-105">
-            //             Bắt đầu làm bài
-            //         </button>
-            //     </div>
-            // );
+            if(!data) return (
+                <div className="min-h-screen flex flex-col gap-4 items-center justify-center p-4">
+                    <h1 className="text-2xl font-bold mb-6 text-slate-800">Chọn nội dung ôn tập</h1>
+                    <button onClick={() => startQuiz('old')} className="w-72 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl font-bold shadow-lg">1-10: 51 câu cũ</button>
+                    <button onClick={() => startQuiz('new')} className="w-72 bg-green-600 hover:bg-green-700 text-white p-4 rounded-2xl font-bold shadow-lg">11-20: 20 câu mới</button>
+                    <button onClick={() => startQuiz('new2')} className="w-72 bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-2xl font-bold shadow-lg">21-30: 40 câu mới</button>
+                    <button className="w-72 bg-gray-300 text-white p-4 rounded-2xl font-bold cursor-not-allowed">31-40: Không có gì</button>
+                </div>
+            );
 
             if(done) return (
                 <div className="min-h-screen flex items-center justify-center p-4">
                     <div className="glass-card p-10 rounded-3xl shadow-2xl text-center max-w-sm w-full">
                         <h1 className="text-4xl font-bold text-slate-800 mb-4">Kết quả</h1>
-                        <p className="text-6xl font-black text-blue-600 mb-8">{score}/{quizData.length}</p>
+                        <p className="text-6xl font-black text-blue-600 mb-8">{score}/{data.length}</p>
                         <button onClick={() => window.location.reload()} className="bg-slate-800 text-white px-8 py-3 rounded-xl">Làm lại</button>
                     </div>
                 </div>
@@ -124,12 +236,12 @@
             return (
                 <div className="max-w-2xl mx-auto p-4 py-12">
                     <div className="glass-card p-8 rounded-3xl shadow-2xl">
-                        <div className="mb-4 text-sm font-bold text-blue-500 uppercase tracking-widest">Câu {idx + 1} / {quizData.length}</div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-8">{quizData[idx].question}</h2>
+                        <div className="mb-4 text-sm font-bold text-blue-500 uppercase tracking-widest">Câu {idx + 1} / {data.length}</div>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-8">{data[idx].question}</h2>
                         <div className="space-y-4">
-                            {quizData[idx].options.map((o, i) => (
+                            {data[idx].options.map((o, i) => (
                                 <button key={i} onClick={() => check(i)} 
-                                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${selected === null ? 'bg-white/50 border-white hover:bg-white' : i === quizData[idx].answer ? 'border-green-500 bg-green-200/80' : selected === i ? 'border-red-500 bg-red-200/80' : 'opacity-40'}`}>
+                                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${selected === null ? 'bg-white/50 border-white hover:bg-white' : i === data[idx].answer ? 'border-green-500 bg-green-200/80' : selected === i ? 'border-red-500 bg-red-200/80' : 'opacity-40'}`}>
                                     {o}
                                 </button>
                             ))}
